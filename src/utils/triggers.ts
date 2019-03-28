@@ -138,18 +138,24 @@ export function registerOutsideClick(renderer: Renderer2,
     return Function.prototype;
   }
 
-  /* tslint:disable-next-line: no-any */
-  return renderer.listen('document', 'click', (event: any) => {
+  renderer.listen('document', 'touchstart', function (event) {
     if (options.target && options.target.contains(event.target)) {
-      return undefined;
+      return;
     }
-    if (
-      options.targets &&
-      options.targets.some(target => target.contains(event.target))
-    ) {
-      return undefined;
+    if (options.targets &&
+      options.targets.some(function (target) { return target.contains(event.target); })) {
+      return;
     }
-
+    options.hide();
+  });
+  return renderer.listen('document', 'mousedown', function (event) {
+    if (options.target && options.target.contains(event.target)) {
+      return;
+    }
+    if (options.targets &&
+      options.targets.some(function (target) { return target.contains(event.target); })) {
+      return;
+    }
     options.hide();
   });
 }
